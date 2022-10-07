@@ -1,10 +1,9 @@
-
 package com.portfolio.ceci.controller;
 
-import com.portfolio.ceci.dto.DtoHardSkills;
-import com.portfolio.ceci.entity.HardSkills;
+import com.portfolio.ceci.dto.DtoSoftSkills;
+import com.portfolio.ceci.entity.SoftSkills;
 import com.portfolio.ceci.security.controller.Mensaje;
-import com.portfolio.ceci.service.HardSkillsService;
+import com.portfolio.ceci.service.SoftSkillsService;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,69 +20,71 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/hardskills")
+@RequestMapping("/softskills")
 @CrossOrigin(origins = "http://localhost:4200")
-public class HardSkillsController {
+public class SoftSkillsController {
+
     @Autowired
-    HardSkillsService hardSkillsService;
-    
+    SoftSkillsService softSkillsService;
+
     @GetMapping("/lista")
-    public ResponseEntity<List<HardSkills>> list() {
-        List<HardSkills> list = hardSkillsService.list();
+    public ResponseEntity<List<SoftSkills>> list() {
+        List<SoftSkills> list = softSkillsService.list();
         return new ResponseEntity(list, HttpStatus.OK);
     }
-    
+
     @GetMapping("/detail/{id}")
-    public ResponseEntity<HardSkills> getById(@PathVariable("id") int id) {
-        if (!hardSkillsService.existsById(id)) {
+    public ResponseEntity<SoftSkills> getById(@PathVariable("id") int id) {
+        if (!softSkillsService.existsById(id)) {
             return new ResponseEntity(new Mensaje("no existe"), HttpStatus.BAD_REQUEST);
         }
-        HardSkills hardSkills = hardSkillsService.getOne(id).get();
-        return new ResponseEntity(hardSkills, HttpStatus.OK);
-    }    
-    
+        SoftSkills softSkills = softSkillsService.getOne(id).get();
+        return new ResponseEntity(softSkills, HttpStatus.OK);
+    }
+
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody DtoHardSkills dtoHardSkills) {
-        if (StringUtils.isBlank(dtoHardSkills.getNombreHS())) {
+    public ResponseEntity<?> create(@RequestBody DtoSoftSkills dtoSoftSkills) {
+        if (StringUtils.isBlank(dtoSoftSkills.getNombreSS())) {
             return new ResponseEntity(new Mensaje("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
         }
-        if (hardSkillsService.existsByNombreHS(dtoHardSkills.getNombreHS())) {
+        if (softSkillsService.existsByNombreSS(dtoSoftSkills.getNombreSS())) {
             return new ResponseEntity(new Mensaje("La habilidad ya existe"), HttpStatus.BAD_REQUEST);
         }
-        
-        HardSkills hardSkills = new HardSkills(dtoHardSkills.getNombreHS(), dtoHardSkills.getPorcentajeHS());
-        hardSkillsService.save(hardSkills);
-        
-        return new ResponseEntity(new Mensaje("Habilidad agregada"), HttpStatus.OK);        
-    }    
-    
+
+        SoftSkills softSkills = new SoftSkills(dtoSoftSkills.getNombreSS(), dtoSoftSkills.getPorcentajeSS());
+        softSkillsService.save(softSkills);
+
+        return new ResponseEntity(new Mensaje("Habilidad agregada"), HttpStatus.OK);
+    }
+
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody DtoHardSkills dtoHardSkills) {
-        if (!hardSkillsService.existsById(id)) {
+    public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody DtoSoftSkills dtoSoftSkills) {
+        if (!softSkillsService.existsById(id)) {
             return new ResponseEntity(new Mensaje("El ID no existe"), HttpStatus.BAD_REQUEST);
         }
-        if (hardSkillsService.existsByNombreHS(dtoHardSkills.getNombreHS()) && hardSkillsService.getByNombreHS(dtoHardSkills.getNombreHS()).get().getId() != id) {
+        if (softSkillsService.existsByNombreSS(dtoSoftSkills.getNombreSS()) && softSkillsService.getByNombreSS(dtoSoftSkills.getNombreSS()).get().getId() != id) {
             return new ResponseEntity(new Mensaje("La habilidad ya existe"), HttpStatus.BAD_REQUEST);
         }
-        if (StringUtils.isBlank(dtoHardSkills.getNombreHS())) {
+        if (StringUtils.isBlank(dtoSoftSkills.getNombreSS())) {
             return new ResponseEntity(new Mensaje("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
         }
-        
-        HardSkills hardSkills = hardSkillsService.getOne(id).get();
-        hardSkills.setNombreHS(dtoHardSkills.getNombreHS());
-        hardSkills.setPorcentajeHS(dtoHardSkills.getPorcentajeHS());
-        
-        hardSkillsService.save(hardSkills);
+
+        SoftSkills softSkills = softSkillsService.getOne(id).get();
+        softSkills.setNombreSS(dtoSoftSkills.getNombreSS());
+        softSkills.setPorcentajeSS(dtoSoftSkills.getPorcentajeSS());
+
+        softSkillsService.save(softSkills);
         return new ResponseEntity(new Mensaje("Habilidad actualizada"), HttpStatus.OK);
     }
-    
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") int id) {
-        if (!hardSkillsService.existsById(id)) {
+        if (!softSkillsService.existsById(id)) {
             return new ResponseEntity(new Mensaje("El ID no existe"), HttpStatus.NOT_FOUND);
         }
-        
-        hardSkillsService.delete(id);
-        return new ResponseEntity(new Mensaje("Habilidad eliminada"), HttpStatus.OK);        
-    } 
+
+        softSkillsService.delete(id);
+        return new ResponseEntity(new Mensaje("Habilidad eliminada"), HttpStatus.OK);
+    }
+
 }
